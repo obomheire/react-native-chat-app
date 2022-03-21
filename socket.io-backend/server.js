@@ -4,7 +4,10 @@ const io = new Server({});
 
 io.on("connection", (socket) => {
   console.log('connected...')
-  socket.on('message', message => console.log(message))
+  socket.on('message', message => {
+    console.log(message)
+    io.emit('message', message)
+  })
 });
 
 io.listen(3001);
