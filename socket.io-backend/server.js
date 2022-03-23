@@ -1,4 +1,60 @@
 import { Server } from "socket.io";
+import handleMessage from "./handlers/message.handler.js";
+
+const io = new Server({});
+
+let currentUserId = 2;
+
+const users = {};
+
+const creatUserAvatarUrl = () => {
+const rand1 = Math.round(Math.random() * 200 + 100)
+const rand2 = Math.round(Math.random() * 200 + 100)
+  return `https://placeimg.com/${rand1}/${rand2}/any`
+}
+
+io.on("connection", (socket) => {
+  let countConnect = io.engine.clientsCount;
+  console.log(`${countConnect} devise(s) connected`);
+  // console.log(socket.id);
+  users[socket.id] = {userId: currentUserId++};
+  socket.on('join', username => {
+    users[socket.id].username = username
+    users[socket.id].avatar = creatUserAvatarUrl()
+    handleMessage(socket, users)
+  })
+ 
+});
+
+io.listen(3001);
+
+//EXAMPLE 3
+
+/*
+import { Server } from "socket.io";
+import handleMessage from "./handlers/message.handler.js";
+
+const io = new Server({});
+
+let currentUserId = 2;
+
+const userIds = {};
+
+io.on("connection", (socket) => {
+  let countConnect = io.engine.clientsCount;
+  console.log(`${countConnect} devise(s) connected`);
+  // console.log(socket.id);
+  userIds[socket.id] = currentUserId++;
+  handleMessage(socket, userIds)
+});
+
+io.listen(3001);
+*/
+
+// EXAMPLE 2
+
+/*
+import { Server } from "socket.io";
 
 const io = new Server({});
 
@@ -29,32 +85,36 @@ io.on("connection", (socket) => {
     const message = createMessage(userId, messageText)
     //Receive the message
     console.log(message)
+    //Broadcast will send the message to every client exept for the client that is broadcasting
     socket.broadcast.emit("message", message);
   });
 });
 
 io.listen(3001);
+*/
 
-//EXAMPLE 
+//EXAMPLE 1
 
-//import { Server } from "socket.io";
+/*
+import { Server } from "socket.io";
 
-// const io = new Server({});
+const io = new Server({});
 
-// io.on("connection", (socket) => {
+io.on("connection", (socket) => {
   
-//   let countConnect = io.engine.clientsCount
-//   console.log(socket.id)
-//   console.log(`${countConnect} devise(s) connected`)
-//   socket.on('message', message => {
+  let countConnect = io.engine.clientsCount
+  console.log(socket.id)
+  console.log(`${countConnect} devise(s) connected`)
+  socket.on('message', message => {
 
-//     //Receive the message
-//     console.log(message)
+    //Receive the message
+    console.log(message)
 
-//     //Return a response
-//     io.emit('message', message)
-//   })
-// });
+    //Return a response
+    io.emit('message', message)
+  })
+});
 
-// io.listen(3001);
+io.listen(3001);
 
+*/
