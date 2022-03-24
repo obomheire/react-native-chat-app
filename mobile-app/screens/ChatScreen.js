@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import React from "react";
+import { View} from "react-native";
 import { useDispatch } from "react-redux";
 import { GiftedChat } from "react-native-gifted-chat";
 
@@ -9,30 +9,6 @@ ChatScreen.navigationOptions = (screenProps) => ({
 
 export default function ChatScreen( { navigation }) {
   const dispatch = useDispatch();
-  // const [receiveMessage, setReceiveMessage] = useState([]);
-  // const [hasJoined, setHasJoined] = useState(false);
-  // const socket = useRef(null);
-  // console.log(messageToSend)
-
-  // useEffect(() => {
-  //   // socket.current = io("http://192.168.88.231:3001"); //uno
-  //   socket.current = io("http://192.168.0.107:3001"); //office
-  //   socket.current.on("message", (message) => {
-  //     setReceiveMessage((prevState) => GiftedChat.append(prevState, message));
-  //   });
-  // }, []);
-
-  // const onSave = (messages) => {
-  //   console.log(messages);
-  //   socket.current.emit("message", messages[0].text);
-  //   //This will send along this piece of message eith user id 1 indicating blue for the sender
-  //   setReceiveMessage((prevState) => GiftedChat.append(prevState, messages));
-  // };
-
-  // const joinChat = (username) => {
-  //   socket.current.emit("join", username);
-  //   setHasJoined(true);
-  // };
 
   return (
     <View style={{ flex: 1 }}>
@@ -50,6 +26,56 @@ export default function ChatScreen( { navigation }) {
     </View>
   );
 }
+
+
+
+//EXAMPLE 4
+
+/*
+import React, { useEffect, useState, useRef } from "react";
+import { View, Text, StyleSheet, TextInput } from "react-native";
+import io from "socket.io-client";
+import { GiftedChat } from "react-native-gifted-chat";
+// import JoinScreen from "./JoinScreen";
+
+export default function ChatScreen() {
+  const [receiveMessage, setReceiveMessage] = useState([]);
+  const [hasJoined, setHasJoined] = useState(false);
+  const socket = useRef(null);
+  // console.log(messageToSend)
+
+  useEffect(() => {
+    // socket.current = io("http://192.168.88.231:3001"); //uno
+    socket.current = io("http://192.168.0.107:3001"); //office
+    socket.current.on("message", (message) => {
+      setReceiveMessage((prevState) => GiftedChat.append(prevState, message));
+    });
+  }, []);
+
+  const onSave = (messages) => {
+    console.log(messages);
+    socket.current.emit("message", messages[0].text);
+    //This will send along this piece of message eith user id 1 indicating blue for the sender
+    setReceiveMessage((prevState) => GiftedChat.append(prevState, messages));
+  };
+
+  const joinChat = (username) => {
+    socket.current.emit("join", username);
+    setHasJoined(true);
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+        <GiftedChat
+          renderUsernameOnMessage
+          messages={receiveMessage}
+          onSend={(messages) => onSave(messages)}
+          user={{ _id: 1 }}
+        />
+    </View>
+  );
+}
+*/
 
 //EXAMPLE 3
 
