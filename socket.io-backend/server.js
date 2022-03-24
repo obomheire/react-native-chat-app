@@ -1,5 +1,6 @@
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import handleMessage from "./handlers/message.handler.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const io = new Server({});
 
@@ -13,15 +14,45 @@ const rand2 = Math.round(Math.random() * 200 + 100)
   return `https://placeimg.com/${rand1}/${rand2}/any`
 }
 
+const createUserOnline = () => {
+  const values = Object.values(users)
+  const onlyWithUsernames = values.filter(u => u.username !== undefined)
+  return onlyWithUsernames
+}
+
 io.on("connection", (socket) => {
   let countConnect = io.engine.clientsCount;
   console.log(`${countConnect} devise(s) connected`);
   // console.log(socket.id);
-  users[socket.id] = {userId: currentUserId++};
+  // users[socket.id] = {userId: currentUserId++};
+    users[socket.id] = {userId: uuidv4()};
+
   socket.on('join', username => {
     users[socket.id].username = username
     users[socket.id].avatar = creatUserAvatarUrl()
     handleMessage(socket, users)
+  })
+
+  socket.on('disconnect', () => {
+    delete users[socket.id]
+    io.emit('action', {type: 'users_online', data: createUserOnline()})
+  })
+
+  socket.on('action', action => {
+    switch(action.type){
+      case 'server/hello':
+        console.log('Got hello event', action.data)
+        socket.emit('action', {type: 'message', data: 'Good buy'})
+        break;
+      case 'server/join':
+        console.log('Got join event', action.data)
+        users[socket.id].username = action.data
+        users[socket.id].avatar = creatUserAvatarUrl()
+        io.emit('action', { type: 'users_online', data: createUserOnline() })
+        break;
+      case 'server/private-message':
+        console.log('Got a private message', action.data)
+    }
   })
  
 });

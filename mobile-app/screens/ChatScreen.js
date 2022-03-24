@@ -1,5 +1,61 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
+import { useDispatch } from "react-redux";
+import { GiftedChat } from "react-native-gifted-chat";
+
+ChatScreen.navigationOptions = (screenProps) => ({
+  title: screenProps.navigation.getParam("name"),
+});
+
+export default function ChatScreen( { navigation }) {
+  const dispatch = useDispatch();
+  // const [receiveMessage, setReceiveMessage] = useState([]);
+  // const [hasJoined, setHasJoined] = useState(false);
+  // const socket = useRef(null);
+  // console.log(messageToSend)
+
+  // useEffect(() => {
+  //   // socket.current = io("http://192.168.88.231:3001"); //uno
+  //   socket.current = io("http://192.168.0.107:3001"); //office
+  //   socket.current.on("message", (message) => {
+  //     setReceiveMessage((prevState) => GiftedChat.append(prevState, message));
+  //   });
+  // }, []);
+
+  // const onSave = (messages) => {
+  //   console.log(messages);
+  //   socket.current.emit("message", messages[0].text);
+  //   //This will send along this piece of message eith user id 1 indicating blue for the sender
+  //   setReceiveMessage((prevState) => GiftedChat.append(prevState, messages));
+  // };
+
+  // const joinChat = (username) => {
+  //   socket.current.emit("join", username);
+  //   setHasJoined(true);
+  // };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <GiftedChat
+        renderUsernameOnMessage
+        messages={[]}
+        onSend={(messages) =>
+          dispatch({
+            type: "server/private-message",
+            data: { text: messages[0].text, to: navigation.getParam('userId') },
+          })
+        }
+        user={{ _id: 1 }}
+      />
+    </View>
+  );
+}
+
+//EXAMPLE 3
+
+/*
+import React, { useEffect, useState, useRef } from "react";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import io from "socket.io-client";
 import { GiftedChat } from "react-native-gifted-chat";
 import JoinScreen from "./JoinScreen";
@@ -44,6 +100,7 @@ export default function HomeScreen() {
     </View>
   );
 }
+*/
 
 // EXAMPLE 2
 
